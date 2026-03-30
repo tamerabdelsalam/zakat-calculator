@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "verify": "npm run lint && npm run typecheck && npm run build",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "docs:progress": "node scripts/check-implementation-progress.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

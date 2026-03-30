@@ -1,6 +1,6 @@
 # Implementation Progress
 
-## Phase 1: Foundation ✅
+### Phase 1 — Foundation ✅
 
 - [x] Next.js 16 + TypeScript + Tailwind v4 scaffold
 - [x] ESLint flat config (core-web-vitals + typescript + prettier)
@@ -22,21 +22,21 @@
 - [x] .gitignore
 - [x] Landing page placeholder
 
-## Phase 2: Calculation Engine
+### Phase 2 — Calculation Engine
 
 - [ ] Complete all 5 special cases in calculator
 - [ ] Zod validation schemas
 - [ ] Vitest setup and unit tests
 - [ ] Silver auto-conversion between purities
 
-## Phase 3: Price Integration
+### Phase 3 — Price Integration
 
 - [ ] GoldAPI.io integration
 - [ ] ExchangeRate-API integration
 - [ ] Historical gold price for nisab date
 - [ ] Stale data warning banner
 
-## Phase 4: UI — Calculator Form
+### Phase 4 — UI: Calculator Form
 
 - [ ] Multi-step form stepper component
 - [ ] Cash & bank balances form
@@ -52,7 +52,7 @@
 - [ ] Year type selector
 - [ ] Nisab date picker
 
-## Phase 5: UI — Results & Polish
+### Phase 5 — UI: Results & Polish
 
 - [ ] Results card with full breakdown
 - [ ] Nisab status indicator
@@ -63,7 +63,7 @@
 - [ ] Local storage persistence
 - [ ] Print/export
 
-## Phase 6: Production
+### Phase 6 — Production
 
 - [ ] Arabic SEO metadata
 - [ ] OG images
