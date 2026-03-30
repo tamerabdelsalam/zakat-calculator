@@ -1,0 +1,21 @@
+---
+description: Component folder conventions — ui, layout, calculator, shared
+globs: src/components/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Component Folders
+
+```
+src/components/
+  ui/            # shadcn/ui primitives (managed by `npx shadcn add`)
+  layout/        # Header, Footer, navigation shell
+  calculator/    # Asset forms, stepper, summary, results display
+  shared/        # ThemeToggle, PriceBar, reusable widgets
+  providers/     # ThemeProvider, context providers
+```
+
+- Do not put custom components directly in `ui/` — that folder is for shadcn primitives.
+- Do not dump components in `src/components/` root — pick the right subfolder.
+- Calculator-specific components (forms, results) go in `calculator/`.
+- Shared components used across pages go in `shared/`.

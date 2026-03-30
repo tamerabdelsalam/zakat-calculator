@@ -1,0 +1,22 @@
+---
+description: App Router route layout — public pages under (public), API under api/
+globs: src/app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Route Groups
+
+```
+src/app/
+  (public)/          # All visitor-facing pages
+    page.tsx         # Home / landing
+    calculator/      # Multi-step zakat form
+    results/         # Calculation results
+    guide/           # Zakat rules & educational content
+  api/               # API routes
+    prices/          # Gold, silver, currency price data
+  layout.tsx         # Root layout (Arabic font, RTL, theme provider)
+```
+
+- New public pages go in `src/app/(public)/`, not at the `src/app/` root.
+- API routes go in `src/app/api/`.

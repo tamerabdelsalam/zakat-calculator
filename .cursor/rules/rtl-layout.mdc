@@ -1,0 +1,18 @@
+---
+description: RTL layout and Arabic-first conventions
+globs: src/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# RTL & Arabic-First Rules
+
+- The app is `dir="rtl"` and `lang="ar"`. All user-facing text is Arabic.
+- Always use **logical CSS properties** in Tailwind:
+  - `ms-*` / `me-*` instead of `ml-*` / `mr-*`
+  - `ps-*` / `pe-*` instead of `pl-*` / `pr-*`
+  - `start-*` / `end-*` instead of `left-*` / `right-*`
+  - `text-start` / `text-end` instead of `text-left` / `text-right`
+  - `rounded-ss-*` / `rounded-ee-*` instead of `rounded-tl-*` / `rounded-br-*`
+- Use `Intl.NumberFormat("ar-SA")` for number/currency display — import helpers from `@/lib/formatters`.
+- Keep Western Arabic numerals (0-9) in form inputs; format display values via `formatters.ts`.
+- Cairo is the primary font (loaded via `next/font/google`).

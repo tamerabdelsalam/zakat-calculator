@@ -1,0 +1,15 @@
+---
+description: Price data fetching and caching conventions
+globs: src/lib/prices/**/*.ts, src/app/api/prices/**/*.ts
+alwaysApply: false
+---
+
+# Price Data Rules
+
+- Never call external price APIs directly from client components.
+- Always go through the `/api/prices` route handler.
+- Price data is cached server-side with 24-hour TTL (`lib/prices/cache.ts`).
+- Use `lib/formatters.ts` for all currency display — never raw `.toString()`.
+- Always include `updatedAt` in price displays so users know data freshness.
+- Fallback prices exist in `lib/prices/constants.ts` for when APIs are unavailable.
+- Show a warning banner in Arabic when using fallback/stale data.

@@ -1,0 +1,17 @@
+---
+description: Zakat calculation domain rules and conventions
+globs: src/lib/zakat/**/*.ts
+alwaysApply: false
+---
+
+# Zakat Calculation Rules
+
+- All calculation logic lives in `src/lib/zakat/` as pure functions — no React, no Next.js imports.
+- Reference: `docs/zakat-rules-reference.md` (based on Thndr specification, scholar-approved).
+- Nine asset types, each with distinct rules. See `types.ts` for interfaces.
+- Five special cases must be handled (see `docs/zakat-rules-reference.md`).
+- Zakat rate: 2.5% (Hijri) or 2.577% (Gregorian) — never hardcode, use `ZAKAT_RATE` constant.
+- Nisab is based on gold price at the **date wealth reached nisab**, not today's price.
+- Gold purity: 24K, 21K, 18K, 14K. Silver purity: 999, 925.
+- Debts are **deducted** from total zakatable wealth.
+- This module should be independently testable — design for Vitest/Jest compatibility.
