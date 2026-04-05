@@ -25,10 +25,10 @@
 
 ### Phase 2 — Calculation Engine
 
-- [ ] Complete all 5 special cases in calculator
+- [x] Complete all 5 special cases in calculator
 - [ ] Zod validation schemas (with Arabic error messages)
-- [ ] Vitest setup and unit tests
-- [ ] Silver auto-conversion between purities
+- [x] Vitest setup and unit tests
+- [x] Silver auto-conversion between purities
 
 ### Phase 3 — Price Integration
 

@@ -120,12 +120,16 @@ export interface AssetBreakdown {
   amount: number;
 }
 
-export type SpecialCase =
+/**
+ * Formerly `SpecialCase` (single value | null). Renamed to `SpecialCaseKey`
+ * and moved to an array (`ZakatResult.specialCases`) so multiple flags can
+ * coexist (e.g. silver_only + unlikely_loans_push_above_nisab).
+ */
+export type SpecialCaseKey =
   | "returns_only"
   | "silver_only"
   | "real_estate_only"
-  | "unlikely_loans_push_above_nisab"
-  | null;
+  | "unlikely_loans_push_above_nisab";
 
 export interface ZakatResult {
   totalZakatableWealth: number;
@@ -136,6 +140,6 @@ export interface ZakatResult {
   zakatRate: number;
   zakatDue: number;
   potentialZakat: number | null;
-  specialCaseApplied: SpecialCase;
+  specialCases: SpecialCaseKey[];
   breakdown: AssetBreakdown[];
 }

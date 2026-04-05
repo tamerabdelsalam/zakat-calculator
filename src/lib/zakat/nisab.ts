@@ -43,3 +43,16 @@ export function silverToPureGrams(
 export function gold24KTo21KPrice(pricePerGram24K: number): number {
   return pricePerGram24K * GOLD_PURITY_RATIO["21K"];
 }
+
+/**
+ * تحويل سعر جرام فضة بين العيارات (٩٩٩ ⇄ ٩٢٥).
+ * الحساب: سعر العيار المطلوب = سعر العيار المُدخل × (نسبة المطلوب / نسبة المُدخل)
+ */
+export function convertSilverPrice(
+  price: number,
+  fromPurity: keyof typeof SILVER_PURITY_RATIO,
+  toPurity: keyof typeof SILVER_PURITY_RATIO,
+): number {
+  if (fromPurity === toPurity) return price;
+  return price * (SILVER_PURITY_RATIO[toPurity] / SILVER_PURITY_RATIO[fromPurity]);
+}

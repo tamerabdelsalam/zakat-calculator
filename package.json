@@ -10,7 +10,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run lint && npm run typecheck && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "docs:progress": "node scripts/check-implementation-progress.mjs"
@@ -41,6 +43,7 @@
     "kill-port": "^2.0.1",
     "prettier": "^3.8.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.2"
   }
 }

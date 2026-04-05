@@ -2,7 +2,7 @@ import {
   type ZakatInput,
   type ZakatResult,
   type AssetBreakdown,
-  type SpecialCase,
+  type SpecialCaseKey,
   ZAKAT_RATE,
   GOLD_PURITY_RATIO,
   SILVER_PURITY_RATIO,
@@ -149,15 +149,34 @@ export function calculateZakat(
   const goldNisab = calculateGoldNisab(prices.goldPricePerGram21K);
   const silverNisab = calculateSilverNisab(prices.silverPricePerGram925);
 
-  const hasSilverOnly =
-    silverTotal > 0 &&
-    cashTotal === 0 &&
-    stocksTotal === 0 &&
-    certsTotal === 0 &&
-    goldTotal === 0 &&
-    realEstateTotal === 0 &&
-    likelyLoansTotal === 0 &&
-    commercialTotal === 0;
+  // ─── Special-case detection ───────────────────────────
+
+  const specialCases: SpecialCaseKey[] = [];
+
+  const nonSilverNonDebt =
+    cashTotal + stocksTotal + certsTotal + goldTotal +
+    realEstateTotal + likelyLoansTotal + commercialTotal;
+
+  const hasSilverOnly = silverTotal > 0 && nonSilverNonDebt === 0;
+  if (hasSilverOnly) specialCases.push("silver_only");
+
+  const hasReturnsOnly =
+    input.assets.certificates.length > 0 &&
+    input.assets.certificates.every((e) => e.spendsReturnsOnly) &&
+    cashTotal === 0 && stocksTotal === 0 && goldTotal === 0 &&
+    silverTotal === 0 && realEstateTotal === 0 &&
+    likelyLoansTotal === 0 && commercialTotal === 0;
+  if (hasReturnsOnly) specialCases.push("returns_only");
+
+  const hasRealEstateOnly =
+    realEstateTotal > 0 &&
+    input.assets.realEstate.every((e) => e.purpose === "investment") &&
+    cashTotal === 0 && stocksTotal === 0 && certsTotal === 0 &&
+    goldTotal === 0 && silverTotal === 0 &&
+    likelyLoansTotal === 0 && commercialTotal === 0;
+  if (hasRealEstateOnly) specialCases.push("real_estate_only");
+
+  // ─── Nisab & zakat calculation ──────────────────────────
 
   const nisabThreshold = hasSilverOnly
     ? Math.min(goldNisab, silverNisab)
@@ -166,17 +185,18 @@ export function calculateZakat(
   const isAboveNisab = netZakatableWealth >= nisabThreshold;
   const zakatRate = ZAKAT_RATE[input.yearType];
 
-  let specialCaseApplied: SpecialCase = null;
-  if (hasSilverOnly) specialCaseApplied = "silver_only";
-
-  const zakatDue = isAboveNisab ? netZakatableWealth * zakatRate : 0;
+  const exemptFromAnnualZakat = hasReturnsOnly || hasRealEstateOnly;
+  const zakatDue =
+    isAboveNisab && !exemptFromAnnualZakat
+      ? netZakatableWealth * zakatRate
+      : 0;
 
   let potentialZakat: number | null = null;
   if (!isAboveNisab && unlikelyLoansTotal > 0) {
     const withUnlikely = netZakatableWealth + unlikelyLoansTotal;
     if (withUnlikely >= nisabThreshold) {
       potentialZakat = withUnlikely * zakatRate;
-      specialCaseApplied = "unlikely_loans_push_above_nisab";
+      specialCases.push("unlikely_loans_push_above_nisab");
     }
   }
 
@@ -189,7 +209,7 @@ export function calculateZakat(
     zakatRate,
     zakatDue,
     potentialZakat,
-    specialCaseApplied,
+    specialCases,
     breakdown,
   };
 }
