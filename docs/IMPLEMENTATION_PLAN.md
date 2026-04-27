@@ -84,6 +84,13 @@ Final — النتيجة
          "ابدأ من جديد" reset button.
 ```
 
+### Multi-currency strategy (v1 vs follow-up)
+
+- **V1 (Phase 4 first ship):** The user picks **one default currency in Step 1**. All asset amounts, running totals, nisab, and zakat are expressed in that same currency. Changing Step 1 after data entry warns and clears (as in the flow above). This keeps the first release shippable and avoids cross-rate bugs in entry forms.
+- **Follow-up (after the wizard works end-to-end):** **Optional per-asset or per-line currency** on an entry, with each value converted to the **main reporting currency** using FX from the same **`data/price-snapshot.json`** (same `benchmarkDate`, single rate table as `/api/prices`). **No** extra GoldAPI or ExchangeRate-API calls per line — conversion is client-side (or in-app math) on already-loaded snapshot rates. **UX:** Where a row has a currency dropdown, the **Step 1 currency is the default selected value**; the user changes it only for rows denominated in another currency (single-currency users need no extra clicks per row).
+- **Optional help UX:** A text link in the guide or help to a **neutral** external FX reference, opened with `target="_blank"` and `rel="noopener noreferrer"`. This is **supplementary**; **iframes** for third-party converters are not recommended. In-app rules remain the source of truth.
+- **Privacy:** User wealth inputs stay on the client. Rates are already loaded from `/api/prices` / the committed snapshot; conversion between supported currencies does not send PII to third parties.
+
 ### Why checklist-then-forms?
 
 - **Accuracy:** Special cases (silver-only, real-estate-only, returns-only)
@@ -178,7 +185,7 @@ an official fatwa authority rather than a generic "qualified scholar".
 - [ ] App shell: Header with language toggle, dark mode, price bar
 - [ ] Wizard state management (React Context + useReducer)
 - [ ] Wizard stepper component with back/forward navigation
-- [ ] Step 1: Currency selector (EGP default, warns on change)
+- [ ] Step 1: Currency selector — **v1: single global currency** for all steps and results (EGP default; warn and clear on change after entry)
 - [ ] Step 2: Year type selector (Hijri/Gregorian)
 - [ ] Step 3: Nisab date picker
 - [ ] Step 4: Asset type checklist (9 types, multi-select cards)
@@ -197,6 +204,7 @@ an official fatwa authority rather than a generic "qualified scholar".
 - [ ] Progress indicator
 - [ ] Mobile-first responsive layout for all steps
 - [ ] Keyboard navigation and focus management between steps
+- [ ] *(Follow-up)* Per-asset / per-line currency dropdown; default selection = Step 1 currency; convert to main using snapshot FX (no per-line API)
 
 ### Phase 5: UI — Results & Polish
 - [ ] Results card with per-category breakdown

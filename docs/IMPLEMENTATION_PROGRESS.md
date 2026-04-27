@@ -49,7 +49,7 @@
 - [ ] Wizard state management (React Context + useReducer)
 - [ ] Wizard stepper component (step indicator, back/forward)
 - [ ] Keyboard navigation and focus management between steps
-- [ ] Step 1: Currency selector (EGP default, warn on change after entry)
+- [ ] Step 1: Currency selector — v1: عملة واحدة للمعالج والنتائج (افتراضي EGP؛ تحذير عند التغيير بعد الإدخال)
 - [ ] Step 2: Year type selector (Hijri/Gregorian)
 - [ ] Step 3: Nisab date picker (default: one year ago)
 - [ ] Step 4: Asset type checklist (9 types, multi-select cards with icons)
@@ -67,6 +67,7 @@
 - [ ] Inline validation with Arabic error messages
 - [ ] Running total in sticky bottom bar
 - [ ] Progress indicator for remaining asset types
+- [ ] *(متابعة)* عملة اختيارية لكل أصل/سطر: القائمة تُعاد افتراضياً لعملة الخطوة ١، والتحويل للعملة الرئيسية عبر أسعار اللقطة (بدون طلب API لكل سطر)
 
 ### Phase 5 — UI: Results & Polish
 
