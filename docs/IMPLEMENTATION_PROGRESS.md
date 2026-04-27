@@ -15,7 +15,7 @@
 - [x] Cursor rules (RTL, routes, components, prices, domain)
 - [x] AGENTS.md
 - [x] Zakat domain types and calculation engine
-- [x] Price data layer (types, cache, fetcher, API route)
+- [x] Price data layer (types, daily snapshot, fetcher, API route)
 - [x] Formatters (currency, number, weight, date)
 - [x] Zakat rules reference documentation
 - [x] .env.example
@@ -32,10 +32,10 @@
 
 ### Phase 3 — Price Integration
 
-- [ ] GoldAPI.io integration
-- [ ] ExchangeRate-API integration
+- [x] GoldAPI.io integration
+- [x] ExchangeRate-API integration
 - [ ] Historical gold price for nisab date
-- [ ] Stale data warning banner
+- [ ] Prices-unavailable / error state in UI (Arabic) when /api/prices returns 503
 
 ### Phase 4 — UI: Calculator Wizard
 

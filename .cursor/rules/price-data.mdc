@@ -1,15 +1,15 @@
 ---
-description: Price data fetching and caching conventions
-globs: src/lib/prices/**/*.ts, src/app/api/prices/**/*.ts
+description: Price data and daily snapshot conventions
+globs: src/lib/prices/**/*.ts, src/app/api/prices/**/*.ts, scripts/*price*.ts, .github/workflows/refresh-prices.yml, data/price-snapshot.json
 alwaysApply: false
 ---
 
 # Price Data Rules
 
-- Never call external price APIs directly from client components.
-- Always go through the `/api/prices` route handler.
-- Price data is cached server-side with 24-hour TTL (`lib/prices/cache.ts`).
-- Use `lib/formatters.ts` for all currency display — never raw `.toString()`.
-- Always include `updatedAt` in price displays so users know data freshness.
-- Fallback prices exist in `lib/prices/constants.ts` for when APIs are unavailable.
-- Show a warning banner in Arabic when using fallback/stale data.
+- Do not call external price APIs (GoldAPI, ExchangeRate-API) from client components. Use `/api/prices` or other server code only.
+- **No hardcoded spot prices in application code.** The committed `data/price-snapshot.json` (from `npm run prices:build` in CI, or `npm run prices:seed` for local dev) is the source. The GitHub Action runs `prices:build` on a schedule and commits the file; see `.github/workflows/refresh-prices.yml`.
+- If the snapshot is missing or invalid, `/api/prices` should return **503** with an Arabic `error` and a `code` key — the UI (when implemented) must block the flow instead of showing invented numbers.
+- Use `lib/formatters.ts` for money in the UI, not raw `.toString()`.
+- In the main UI, show the value plus a clear "last update" *date* (from `benchmarkDate` / `metals.*.updatedAt` as the design allows). **Do not** use labels like "London" or "LBMA" in the default price strip; a short, plain methodology line belongs on the guide page (Phase 5.3) in Arabic.
+
+Consider these rules if they affect your changes.

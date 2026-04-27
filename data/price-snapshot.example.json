@@ -1,0 +1,695 @@
+{
+  "version": 1,
+  "benchmarkDate": "2026-04-27",
+  "refreshedAt": "2026-04-27T00:00:00.000Z",
+  "byCurrency": {
+    "USD": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 90.02202324497243,
+          "pricePerOunceUSD": 3200,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.9516613885897086,
+          "pricePerOunceUSD": 32,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 7651.871975822656,
+        "silverNisab": 566.2385262108767,
+        "currency": "USD"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.096Z"
+    },
+    "EGP": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 4339.061520407671,
+          "pricePerOunceUSD": 154240,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 45.87007893002395,
+          "pricePerOunceUSD": 1542.4,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 368820.22923465207,
+        "silverNisab": 27292.69696336425,
+        "currency": "EGP"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.096Z"
+    },
+    "SAR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 337.5825871686466,
+          "pricePerOunceUSD": 12000,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 3.5687302072114075,
+          "pricePerOunceUSD": 120,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 28694.519909334962,
+        "silverNisab": 2123.3944732907876,
+        "currency": "SAR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.096Z"
+    },
+    "AED": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 330.3808253090488,
+          "pricePerOunceUSD": 11744,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 3.4925972961242304,
+          "pricePerOunceUSD": 117.44,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 28082.370151269148,
+        "silverNisab": 2078.0953911939173,
+        "currency": "AED"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.096Z"
+    },
+    "KWD": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 27.906827205941454,
+          "pricePerOunceUSD": 992,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.2950150304628097,
+          "pricePerOunceUSD": 9.92,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 2372.0803125050234,
+        "silverNisab": 175.53394312537176,
+        "currency": "KWD"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "QAR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 327.68016461169964,
+          "pricePerOunceUSD": 11648,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 3.4640474544665394,
+          "pricePerOunceUSD": 116.48,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 27852.81399199447,
+        "silverNisab": 2061.108235407591,
+        "currency": "QAR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "BHD": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 33.84828074010964,
+          "pricePerOunceUSD": 1203.2,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.35782468210973045,
+          "pricePerOunceUSD": 12.032,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 2877.103862909319,
+        "silverNisab": 212.90568585528962,
+        "currency": "BHD"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "OMR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 34.56845692606941,
+          "pricePerOunceUSD": 1228.8,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.3654379732184481,
+          "pricePerOunceUSD": 12.288,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 2938.3188387159,
+        "silverNisab": 217.43559406497664,
+        "currency": "OMR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "JOD": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 63.91563650393043,
+          "pricePerOunceUSD": 2272,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.675679585898693,
+          "pricePerOunceUSD": 22.72,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 5432.829102834086,
+        "silverNisab": 402.02935360972236,
+        "currency": "JOD"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "EUR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 82.82026138537464,
+          "pricePerOunceUSD": 2944,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.8755284775025319,
+          "pricePerOunceUSD": 29.44,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 7039.722217756844,
+        "silverNisab": 520.9394441140065,
+        "currency": "EUR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "GBP": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 71.11739836352821,
+          "pricePerOunceUSD": 2528,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 0.7518124969858698,
+          "pricePerOunceUSD": 25.28,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 6044.978860899898,
+        "silverNisab": 447.32843570659253,
+        "currency": "GBP"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "TRY": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 3420.836883308952,
+          "pricePerOunceUSD": 121600,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 36.16313276640893,
+          "pricePerOunceUSD": 1216,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 290771.13508126093,
+        "silverNisab": 21517.063996013312,
+        "currency": "TRY"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "PKR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 25206.16650859228,
+          "pricePerOunceUSD": 896000,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 266.46518880511843,
+          "pricePerOunceUSD": 8960,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 2142524.153230344,
+        "silverNisab": 158546.78733904546,
+        "currency": "PKR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "IDR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 1458356.7765685534,
+          "pricePerOunceUSD": 51840000,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 15416.91449515328,
+          "pricePerOunceUSD": 518400,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 123960326.00832704,
+        "silverNisab": 9173064.124616202,
+        "currency": "IDR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "INR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 7651.871975822657,
+          "pricePerOunceUSD": 272000,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 80.89121803012523,
+          "pricePerOunceUSD": 2720,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 650409.1179449259,
+        "silverNisab": 48130.27472792451,
+        "currency": "INR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    },
+    "MYR": {
+      "benchmarkDate": "2026-04-27",
+      "metals": {
+        "gold": {
+          "pricePerGramUSD": 405.0991046023759,
+          "pricePerOunceUSD": 14400,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        },
+        "silver": {
+          "pricePerGramUSD": 4.282476248653689,
+          "pricePerOunceUSD": 144,
+          "updatedAt": "2026-04-27T00:00:00.000Z"
+        }
+      },
+      "currencies": {
+        "base": "USD",
+        "rates": {
+          "USD": 1,
+          "EGP": 48.2,
+          "SAR": 3.75,
+          "AED": 3.67,
+          "KWD": 0.31,
+          "QAR": 3.64,
+          "BHD": 0.376,
+          "OMR": 0.384,
+          "JOD": 0.71,
+          "EUR": 0.92,
+          "GBP": 0.79,
+          "TRY": 38,
+          "PKR": 280,
+          "IDR": 16200,
+          "INR": 85,
+          "MYR": 4.5
+        },
+        "updatedAt": "2026-04-27T00:00:00.000Z"
+      },
+      "nisab": {
+        "goldNisab": 34433.42389120195,
+        "silverNisab": 2548.073367948945,
+        "currency": "MYR"
+      },
+      "fetchedAt": "2026-04-27T06:54:15.097Z"
+    }
+  }
+}

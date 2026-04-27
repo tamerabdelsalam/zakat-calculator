@@ -37,7 +37,7 @@ src/
     │   └── constants.ts    # Arabic labels, currencies
     ├── prices/             # Price data layer
     │   ├── fetcher.ts      # API integration
-    │   ├── cache.ts        # Server-side caching
+    │   (snapshot)          # `data/price-snapshot.json` from daily job
     │   └── types.ts        # Price interfaces
     ├── formatters.ts       # Intl-based formatting
     ├── schemas.ts          # Zod validation schemas

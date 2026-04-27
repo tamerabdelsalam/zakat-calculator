@@ -21,6 +21,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Architecture
 - Calculation engine: `src/lib/zakat/` — pure functions, no framework dependencies
-- Price data: `src/lib/prices/` — server-side fetching with caching
+- Price data: `src/lib/prices/` — read committed daily snapshot `data/price-snapshot.json` (built by GitHub Actions / `npm run prices:build`); no hardcoded fallbacks
 - UI components: `src/components/calculator/` — domain forms and results
 - Route handlers: `src/app/api/` — price data endpoints
