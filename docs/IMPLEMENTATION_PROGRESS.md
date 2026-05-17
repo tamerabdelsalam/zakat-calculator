@@ -40,10 +40,10 @@
 ### Phase 4 — UI: Calculator Wizard
 
 #### 4.1 App Shell
-- [ ] Header with logo, language toggle (AR/EN), dark mode toggle
-- [ ] Price bar (live gold/silver in user's currency)
-- [ ] Footer
-- [ ] Mobile-first responsive layout
+- [x] Header with logo, language toggle (AR/EN), dark mode toggle
+- [x] Price bar (live gold/silver in user's currency)
+- [x] Footer
+- [x] Mobile-first responsive layout
 
 #### 4.2 Wizard Framework
 - [ ] Wizard state management (React Context + useReducer)
