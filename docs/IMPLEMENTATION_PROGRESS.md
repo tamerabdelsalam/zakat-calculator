@@ -34,8 +34,8 @@
 
 - [x] GoldAPI.io integration
 - [x] ExchangeRate-API integration
-- [ ] Historical gold price for nisab date
-- [ ] Prices-unavailable / error state in UI (Arabic) when /api/prices returns 503
+- [x] Historical gold price for nisab date
+- [x] Prices-unavailable / error state in UI (Arabic) when /api/prices returns 503
 
 ### Phase 4 — UI: Calculator Wizard
 

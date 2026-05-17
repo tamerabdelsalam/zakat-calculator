@@ -19,11 +19,47 @@ export async function fetchMetalUsd(
   goldApiKey: string,
   signal?: AbortSignal,
 ): Promise<GoldApiMetalUsdResult> {
+  return fetchMetalUsdFromUrl(
+    `${GOLD_API_BASE}/${metal}/USD`,
+    metal,
+    goldApiKey,
+    signal,
+  );
+}
+
+/**
+ * Fetches historical XAU/USD or XAG/USD price for a specific date from goldapi.io.
+ * GoldAPI historical endpoint: `/api/XAU/USD/YYYYMMDD`
+ *
+ * @param dateIso - YYYY-MM-DD (UTC). Dates more than ~1–2 years back may not be
+ *   available on the free tier; the function throws {@link PriceFetchError} with
+ *   `PRICES_UNAVAILABLE` in that case.
+ */
+export async function fetchMetalUsdOnDate(
+  metal: "XAU" | "XAG",
+  dateIso: string,
+  goldApiKey: string,
+  signal?: AbortSignal,
+): Promise<GoldApiMetalUsdResult> {
+  const datePart = dateIso.replace(/-/g, "");
+  return fetchMetalUsdFromUrl(
+    `${GOLD_API_BASE}/${metal}/USD/${datePart}`,
+    metal,
+    goldApiKey,
+    signal,
+  );
+}
+
+async function fetchMetalUsdFromUrl(
+  url: string,
+  metal: "XAU" | "XAG",
+  goldApiKey: string,
+  signal?: AbortSignal,
+): Promise<GoldApiMetalUsdResult> {
   if (!goldApiKey) {
     throw new PriceFetchError("PRICES_UNAVAILABLE", "مفتاح GoldAPI مفقود.");
   }
 
-  const url = `${GOLD_API_BASE}/${metal}/USD`;
   const res = await fetch(url, {
     signal: signal ?? AbortSignal.timeout(12_000),
     headers: { "x-access-token": goldApiKey },
