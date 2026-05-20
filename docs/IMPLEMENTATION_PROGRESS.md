@@ -49,7 +49,7 @@
 - [x] Wizard state management (React Context + useReducer)
 - [x] Wizard stepper component (step indicator, back/forward)
 - [x] Keyboard navigation and focus management between steps
-- [x] Step 1: Currency selector — v1: عملة واحدة للمعالج والنتائج (افتراضي EGP؛ تحذير عند التغيير بعد الإدخال)
+- [x] Step 1: Currency selector — عملات متعددة في الخطوة ١ مع اختيار عملة رئيسية للنصاب والنتيجة؛ تحذير عند التعديل بعد الإدخال
 - [x] Step 2: Year type selector (Hijri/Gregorian)
 - [x] Step 3: Nisab date picker (default: one year ago)
 - [x] Step 4: Asset type checklist (9 types, multi-select cards with icons)
@@ -67,12 +67,14 @@
 - [ ] Inline validation with Arabic error messages
 - [ ] Running total in sticky bottom bar
 - [ ] Progress indicator for remaining asset types
-- [ ] *(متابعة)* عملة اختيارية لكل أصل/سطر: القائمة تُعاد افتراضياً لعملة الخطوة ١، والتحويل للعملة الرئيسية عبر أسعار اللقطة (بدون طلب API لكل سطر)
+- [x] عملة اختيارية لكل أصل/سطر — القائمة مفلترة على عملات الخطوة ١، والتحويل للعملة الرئيسية عبر أسعار اللقطة (بدون طلب API لكل سطر)
   - أُضيف CNY إلى `SUPPORTED_CURRENCIES` + `CURRENCY_LABELS` وتم إعادة بناء `price-snapshot.json` ✅
-  - الأساس الجاهز للتوصيل عند بناء نماذج الإدخال:
-    - `src/lib/prices/convert.ts` — دالة `convertAmount` نقية (بدون fetch)
-    - `src/components/shared/currency-select.tsx` — قائمة منسدلة بحث مدعومة بـ Base UI (تُستخدم في الخطوة ١، وتُعاد استخدامها في الأسطر)
-    - `src/components/shared/use-snapshot-rates.ts` — hook يجلب جدول أسعار الصرف مرة واحدة
+  - `src/lib/prices/convert.ts` — دالة `convertAmount` نقية (بدون fetch)
+  - `src/components/shared/currency-multi-select.tsx` — اختيار متعدد في الخطوة ١ (شرائح Base UI)
+  - `src/components/shared/currency-select.tsx` — قائمة منسدلة بحث (مفلترة بعملات الخطوة ١ عبر `allowedCurrencies`)
+  - `src/components/shared/use-snapshot-rates.ts` — hook يجلب جدول أسعار الصرف مرة واحدة
+  - نماذج النقد والأسهم والشهادات: اختيار عملة لكل سطر + تحويل تلقائي للمجموع ✅
+  - باقي النماذج (الذهب الوزني/الفضة لا تحتاج، وعقارات/قروض/تجارية/ديون ستضيفه عند بنائها)
 
 ### Phase 5 — UI: Results & Polish
 

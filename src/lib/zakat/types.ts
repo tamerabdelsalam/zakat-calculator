@@ -35,16 +35,23 @@ export type RealEstatePurpose = "investment" | "trade";
 
 // ─── Asset Entries ─────────────────────────────────────
 
+/**
+ * Per-row currency override. When present, the amount is denominated in this
+ * ISO code; the UI converts to the main reporting currency via snapshot rates
+ * before passing to the calculator (the engine itself remains single-currency).
+ */
 export interface CashEntry {
   id: string;
   label: string;
   amount: number;
+  currency?: string;
 }
 
 export interface StockEntry {
   id: string;
   label: string;
   marketValue: number;
+  currency?: string;
 }
 
 export interface CertificateEntry {
@@ -52,6 +59,7 @@ export interface CertificateEntry {
   label: string;
   totalValue: number;
   spendsReturnsOnly: boolean;
+  currency?: string;
 }
 
 export interface GoldEntry {

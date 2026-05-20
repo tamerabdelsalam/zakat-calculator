@@ -22,12 +22,14 @@ export const cashEntrySchema = z.object({
   id: requiredString("المعرّف"),
   label: requiredString("الوصف"),
   amount: positiveNumber("المبلغ"),
+  currency: z.string().optional(),
 });
 
 export const stockEntrySchema = z.object({
   id: requiredString("المعرّف"),
   label: requiredString("الوصف"),
   marketValue: positiveNumber("القيمة السوقية"),
+  currency: z.string().optional(),
 });
 
 export const certificateEntrySchema = z.object({
@@ -37,6 +39,7 @@ export const certificateEntrySchema = z.object({
   spendsReturnsOnly: z.boolean({
     required_error: "يرجى تحديد إذا كنت تنفق العوائد فقط",
   }),
+  currency: z.string().optional(),
 });
 
 export const goldEntrySchema = z.object({

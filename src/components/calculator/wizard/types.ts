@@ -33,7 +33,10 @@ export interface WizardStepDescriptor {
 
 export interface WizardState {
   stepIndex: number;
+  /** Primary reporting currency — nisab, totals, results. Empty until user picks. */
   currency: string;
+  /** Currencies the user holds assets in (Step 1 multi-select). */
+  currencies: string[];
   yearType: ZakatInput["yearType"];
   /** YYYY-MM-DD */
   nisabDate: string;

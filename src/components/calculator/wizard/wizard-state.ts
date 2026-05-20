@@ -42,7 +42,8 @@ export function defaultNisabDateIso(): string {
 export function createInitialWizardState(): WizardState {
   return {
     stepIndex: 0,
-    currency: "EGP",
+    currency: "",
+    currencies: [],
     yearType: "hijri",
     nisabDate: defaultNisabDateIso(),
     selectedAssetTypes: [],

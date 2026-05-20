@@ -17,18 +17,20 @@ export function useWizardKeyboard({
   onBack,
   isFirstStep,
   isLastStep,
+  nextDisabled = false,
 }: {
   onNext: () => void;
   onBack: () => void;
   isFirstStep: boolean;
   isLastStep: boolean;
+  nextDisabled?: boolean;
 }) {
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       const tag = (e.target as HTMLElement | null)?.tagName ?? "";
       const isInteractive = FOCUSABLE_TAGS.has(tag);
 
-      if (e.key === "Enter" && !isInteractive && !isLastStep) {
+      if (e.key === "Enter" && !isInteractive && !isLastStep && !nextDisabled) {
         e.preventDefault();
         onNext();
       }
@@ -41,5 +43,5 @@ export function useWizardKeyboard({
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onNext, onBack, isFirstStep, isLastStep]);
+  }, [onNext, onBack, isFirstStep, isLastStep, nextDisabled]);
 }

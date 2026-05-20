@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { Plus, Trash2, TrendingUp } from "lucide-react";
 
+import { CurrencySelect } from "@/components/shared/currency-select";
+import { useSnapshotRates } from "@/components/shared/use-snapshot-rates";
 import { formatCurrency } from "@/lib/formatters";
+import { convertAmount } from "@/lib/prices/convert";
 import { stockEntrySchema } from "@/lib/schemas";
 import { CURRENCY_LABELS } from "@/lib/zakat/constants";
 import type { StockEntry } from "@/lib/zakat/types";
@@ -11,12 +14,17 @@ import { cn } from "@/lib/utils";
 
 import { useWizard } from "./wizard-context";
 
-function createEmptyStockEntry(): StockEntry {
+function createEmptyStockEntry(defaultCurrency: string): StockEntry {
   return {
     id: crypto.randomUUID(),
     label: "",
     marketValue: 0,
+    currency: defaultCurrency,
   };
+}
+
+function rowCurrency(entry: StockEntry, primary: string): string {
+  return entry.currency ?? primary;
 }
 
 function isDraftEntry(entry: StockEntry): boolean {
@@ -42,13 +50,16 @@ function entryFieldErrors(
 export function StocksStep() {
   const { state, dispatch } = useWizard();
   const firstRef = useRef<HTMLInputElement>(null);
+  const ratesState = useSnapshotRates();
 
   useEffect(() => {
     firstRef.current?.focus();
   }, []);
 
   const entries = state.assets.stocks;
-  const currency = state.currency;
+  const primary = state.currency;
+  const allowed = state.currencies;
+  const multi = allowed.length > 1;
 
   function updateStocks(next: StockEntry[]) {
     dispatch({
@@ -66,14 +77,23 @@ export function StocksStep() {
   }
 
   function addEntry() {
-    updateStocks([...entries, createEmptyStockEntry()]);
+    updateStocks([...entries, createEmptyStockEntry(primary)]);
   }
 
   const validEntries = entries.filter(
     (e) => !isDraftEntry(e) && stockEntrySchema.safeParse(e).success,
   );
 
-  const subtotal = validEntries.reduce((sum, e) => sum + e.marketValue, 0);
+  const subtotal = validEntries.reduce((sum, e) => {
+    const code = rowCurrency(e, primary);
+    if (code === primary) return sum + e.marketValue;
+    if (ratesState.status !== "ok") return sum;
+    try {
+      return sum + convertAmount(e.marketValue, code, primary, ratesState.rates);
+    } catch {
+      return sum;
+    }
+  }, 0);
 
   return (
     <div className="space-y-5">
@@ -81,11 +101,24 @@ export function StocksStep() {
         <TrendingUp className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
         <p>
           أدخل قيمة أسهمك وصناديقك الاستثمارية وETFs السوقية — بالقيمة السوقية
-          الحالية يوم حساب الزكاة. جميع المبالغ بـ{" "}
-          <span className="font-medium text-foreground">
-            {CURRENCY_LABELS[currency] ?? currency}
-          </span>
-          .
+          الحالية يوم حساب الزكاة.{" "}
+          {multi ? (
+            <>
+              اختر عملة كل سطر؛ يُحسب المجموع بالعملة الرئيسية (
+              <span className="font-medium text-foreground">
+                {CURRENCY_LABELS[primary] ?? primary}
+              </span>
+              ).
+            </>
+          ) : (
+            <>
+              جميع المبالغ بـ{" "}
+              <span className="font-medium text-foreground">
+                {CURRENCY_LABELS[primary] ?? primary}
+              </span>
+              .
+            </>
+          )}
         </p>
       </div>
 
@@ -97,6 +130,7 @@ export function StocksStep() {
         <ul className="space-y-3" aria-label="قائمة الأسهم والصناديق">
           {entries.map((entry, idx) => {
             const errors = entryFieldErrors(entry);
+            const code = rowCurrency(entry, primary);
             return (
               <li
                 key={entry.id}
@@ -137,37 +171,70 @@ export function StocksStep() {
                   )}
                 </div>
 
-                <div className="space-y-1.5">
-                  <label
-                    htmlFor={`stock-value-${entry.id}`}
-                    className="text-sm font-medium"
-                  >
-                    القيمة السوقية ({currency})
-                  </label>
-                  <input
-                    id={`stock-value-${entry.id}`}
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="0.01"
-                    value={entry.marketValue > 0 ? entry.marketValue : ""}
-                    onChange={(e) => {
-                      const raw = e.target.value;
-                      const marketValue = raw === "" ? 0 : Number.parseFloat(raw);
-                      updateEntry(entry.id, {
-                        marketValue: Number.isFinite(marketValue) ? marketValue : 0,
-                      });
-                    }}
-                    placeholder="0.00"
-                    className={cn(
-                      "w-full rounded-md border bg-background px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      errors.marketValue ? "border-destructive" : "border-input",
+                <div className={cn("grid gap-3", multi && "sm:grid-cols-2")}>
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor={`stock-value-${entry.id}`}
+                      className="text-sm font-medium"
+                    >
+                      القيمة السوقية ({code})
+                    </label>
+                    <input
+                      id={`stock-value-${entry.id}`}
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      value={entry.marketValue > 0 ? entry.marketValue : ""}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        const marketValue = raw === "" ? 0 : Number.parseFloat(raw);
+                        updateEntry(entry.id, {
+                          marketValue: Number.isFinite(marketValue) ? marketValue : 0,
+                        });
+                      }}
+                      placeholder="0.00"
+                      className={cn(
+                        "w-full rounded-md border bg-background px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        errors.marketValue ? "border-destructive" : "border-input",
+                      )}
+                    />
+                    {errors.marketValue && (
+                      <p className="text-xs text-destructive">{errors.marketValue}</p>
                     )}
-                  />
-                  {errors.marketValue && (
-                    <p className="text-xs text-destructive">{errors.marketValue}</p>
+                  </div>
+
+                  {multi && (
+                    <div className="space-y-1.5">
+                      <span className="text-sm font-medium">العملة</span>
+                      <CurrencySelect
+                        value={code}
+                        allowedCurrencies={allowed}
+                        onChange={(next) => updateEntry(entry.id, { currency: next })}
+                        aria-label={`عملة الإدخال ${idx + 1}`}
+                      />
+                    </div>
                   )}
                 </div>
+
+                {multi &&
+                  code !== primary &&
+                  entry.marketValue > 0 &&
+                  ratesState.status === "ok" && (
+                    <p className="text-xs text-muted-foreground">
+                      ≈{" "}
+                      {formatCurrency(
+                        convertAmount(
+                          entry.marketValue,
+                          code,
+                          primary,
+                          ratesState.rates,
+                        ),
+                        primary,
+                      )}{" "}
+                      بالعملة الرئيسية
+                    </p>
+                  )}
               </li>
             );
           })}
@@ -187,7 +254,7 @@ export function StocksStep() {
         <div className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3 text-sm">
           <span className="text-muted-foreground">مجموع الأسهم والصناديق</span>
           <span className="font-semibold tabular-nums">
-            {formatCurrency(subtotal, currency)}
+            {formatCurrency(subtotal, primary)}
           </span>
         </div>
       )}

@@ -8,7 +8,8 @@ import {
 import type { AssetCategoryKey, WizardState } from "./types";
 
 export type WizardAction =
-  | { type: "SET_CURRENCY"; currency: string }
+  | { type: "SET_CURRENCIES"; currencies: string[] }
+  | { type: "SET_PRIMARY_CURRENCY"; currency: string }
   | { type: "SET_YEAR_TYPE"; yearType: YearType }
   | { type: "SET_NISAB_DATE"; nisabDate: string }
   | { type: "SET_SELECTED_ASSET_TYPES"; selected: AssetCategoryKey[] }
@@ -35,8 +36,26 @@ function reconcileStepIndex(state: WizardState, next: Partial<WizardState>): num
 
 export function wizardReducer(state: WizardState, action: WizardAction): WizardState {
   switch (action.type) {
-    case "SET_CURRENCY":
+    case "SET_CURRENCIES": {
+      const currencies = [...action.currencies];
+      const currency =
+        currencies.length === 0
+          ? ""
+          : currencies.includes(state.currency)
+            ? state.currency
+            : currencies[0]!;
+      return normalize({ ...state, currencies, currency });
+    }
+
+    case "SET_PRIMARY_CURRENCY": {
+      if (
+        state.currencies.length === 0 ||
+        !state.currencies.includes(action.currency)
+      ) {
+        return state;
+      }
       return normalize({ ...state, currency: action.currency });
+    }
 
     case "SET_YEAR_TYPE":
       return normalize({ ...state, yearType: action.yearType });

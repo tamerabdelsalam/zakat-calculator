@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { Banknote, Plus, Trash2 } from "lucide-react";
 
+import { CurrencySelect } from "@/components/shared/currency-select";
+import { useSnapshotRates } from "@/components/shared/use-snapshot-rates";
 import { formatCurrency } from "@/lib/formatters";
+import { convertAmount } from "@/lib/prices/convert";
 import { cashEntrySchema } from "@/lib/schemas";
 import { CURRENCY_LABELS } from "@/lib/zakat/constants";
 import type { CashEntry } from "@/lib/zakat/types";
@@ -11,12 +14,17 @@ import { cn } from "@/lib/utils";
 
 import { useWizard } from "./wizard-context";
 
-function createEmptyCashEntry(): CashEntry {
+function createEmptyCashEntry(defaultCurrency: string): CashEntry {
   return {
     id: crypto.randomUUID(),
     label: "",
     amount: 0,
+    currency: defaultCurrency,
   };
+}
+
+function rowCurrency(entry: CashEntry, primary: string): string {
+  return entry.currency ?? primary;
 }
 
 function isDraftEntry(entry: CashEntry): boolean {
@@ -40,13 +48,16 @@ function entryFieldErrors(entry: CashEntry): { label?: string; amount?: string }
 export function CashStep() {
   const { state, dispatch } = useWizard();
   const firstRef = useRef<HTMLInputElement>(null);
+  const ratesState = useSnapshotRates();
 
   useEffect(() => {
     firstRef.current?.focus();
   }, []);
 
   const entries = state.assets.cash;
-  const currency = state.currency;
+  const primary = state.currency;
+  const allowed = state.currencies;
+  const multi = allowed.length > 1;
 
   function updateCash(next: CashEntry[]) {
     dispatch({
@@ -64,14 +75,23 @@ export function CashStep() {
   }
 
   function addEntry() {
-    updateCash([...entries, createEmptyCashEntry()]);
+    updateCash([...entries, createEmptyCashEntry(primary)]);
   }
 
   const validEntries = entries.filter(
     (e) => !isDraftEntry(e) && cashEntrySchema.safeParse(e).success,
   );
 
-  const subtotal = validEntries.reduce((sum, e) => sum + e.amount, 0);
+  const subtotal = validEntries.reduce((sum, e) => {
+    const code = rowCurrency(e, primary);
+    if (code === primary) return sum + e.amount;
+    if (ratesState.status !== "ok") return sum;
+    try {
+      return sum + convertAmount(e.amount, code, primary, ratesState.rates);
+    } catch {
+      return sum;
+    }
+  }, 0);
 
   return (
     <div className="space-y-5">
@@ -79,11 +99,24 @@ export function CashStep() {
         <Banknote className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
         <p>
           أدخل النقد في متناول يدك والأرصدة البنكية الزكوية — حسابات جارية،
-          توفير، وودائع قابلة للسحب. جميع المبالغ بـ{" "}
-          <span className="font-medium text-foreground">
-            {CURRENCY_LABELS[currency] ?? currency}
-          </span>
-          .
+          توفير، وودائع قابلة للسحب.{" "}
+          {multi ? (
+            <>
+              اختر عملة كل سطر؛ يُحسب المجموع بالعملة الرئيسية (
+              <span className="font-medium text-foreground">
+                {CURRENCY_LABELS[primary] ?? primary}
+              </span>
+              ).
+            </>
+          ) : (
+            <>
+              جميع المبالغ بـ{" "}
+              <span className="font-medium text-foreground">
+                {CURRENCY_LABELS[primary] ?? primary}
+              </span>
+              .
+            </>
+          )}
         </p>
       </div>
 
@@ -95,6 +128,7 @@ export function CashStep() {
         <ul className="space-y-3" aria-label="قائمة النقد والأرصدة">
           {entries.map((entry, idx) => {
             const errors = entryFieldErrors(entry);
+            const code = rowCurrency(entry, primary);
             return (
               <li
                 key={entry.id}
@@ -135,34 +169,62 @@ export function CashStep() {
                   )}
                 </div>
 
-                <div className="space-y-1.5">
-                  <label htmlFor={`cash-amount-${entry.id}`} className="text-sm font-medium">
-                    المبلغ ({currency})
-                  </label>
-                  <input
-                    id={`cash-amount-${entry.id}`}
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="0.01"
-                    value={entry.amount > 0 ? entry.amount : ""}
-                    onChange={(e) => {
-                      const raw = e.target.value;
-                      const amount = raw === "" ? 0 : Number.parseFloat(raw);
-                      updateEntry(entry.id, {
-                        amount: Number.isFinite(amount) ? amount : 0,
-                      });
-                    }}
-                    placeholder="0.00"
-                    className={cn(
-                      "w-full rounded-md border bg-background px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      errors.amount ? "border-destructive" : "border-input",
+                <div className={cn("grid gap-3", multi && "sm:grid-cols-2")}>
+                  <div className="space-y-1.5">
+                    <label htmlFor={`cash-amount-${entry.id}`} className="text-sm font-medium">
+                      المبلغ ({code})
+                    </label>
+                    <input
+                      id={`cash-amount-${entry.id}`}
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      value={entry.amount > 0 ? entry.amount : ""}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        const amount = raw === "" ? 0 : Number.parseFloat(raw);
+                        updateEntry(entry.id, {
+                          amount: Number.isFinite(amount) ? amount : 0,
+                        });
+                      }}
+                      placeholder="0.00"
+                      className={cn(
+                        "w-full rounded-md border bg-background px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        errors.amount ? "border-destructive" : "border-input",
+                      )}
+                    />
+                    {errors.amount && (
+                      <p className="text-xs text-destructive">{errors.amount}</p>
                     )}
-                  />
-                  {errors.amount && (
-                    <p className="text-xs text-destructive">{errors.amount}</p>
+                  </div>
+
+                  {multi && (
+                    <div className="space-y-1.5">
+                      <span className="text-sm font-medium">العملة</span>
+                      <CurrencySelect
+                        value={code}
+                        allowedCurrencies={allowed}
+                        onChange={(next) => updateEntry(entry.id, { currency: next })}
+                        aria-label={`عملة الإدخال ${idx + 1}`}
+                      />
+                    </div>
                   )}
                 </div>
+
+                {multi &&
+                  code !== primary &&
+                  entry.amount > 0 &&
+                  ratesState.status === "ok" && (
+                    <p className="text-xs text-muted-foreground">
+                      ≈{" "}
+                      {formatCurrency(
+                        convertAmount(entry.amount, code, primary, ratesState.rates),
+                        primary,
+                      )}{" "}
+                      بالعملة الرئيسية
+                    </p>
+                  )}
               </li>
             );
           })}
@@ -182,7 +244,7 @@ export function CashStep() {
         <div className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3 text-sm">
           <span className="text-muted-foreground">مجموع النقد والأرصدة</span>
           <span className="font-semibold tabular-nums">
-            {formatCurrency(subtotal, currency)}
+            {formatCurrency(subtotal, primary)}
           </span>
         </div>
       )}

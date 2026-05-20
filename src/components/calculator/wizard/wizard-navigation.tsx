@@ -9,6 +9,7 @@ interface WizardNavigationProps {
   onNext: () => void;
   isFirstStep: boolean;
   isLastStep: boolean;
+  nextDisabled?: boolean;
   nextLabel?: string;
   className?: string;
 }
@@ -18,6 +19,7 @@ export function WizardNavigation({
   onNext,
   isFirstStep,
   isLastStep,
+  nextDisabled = false,
   nextLabel = "التالي",
   className,
 }: WizardNavigationProps) {
@@ -36,7 +38,7 @@ export function WizardNavigation({
       <button
         type="button"
         onClick={onNext}
-        disabled={isLastStep}
+        disabled={isLastStep || nextDisabled}
         className="inline-flex items-center gap-1 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {nextLabel}

@@ -3,6 +3,7 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { THEME_INIT_SCRIPT } from "@/lib/theme-init-script";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -43,6 +44,12 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${cairo.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+          suppressHydrationWarning
+        />
+      </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}

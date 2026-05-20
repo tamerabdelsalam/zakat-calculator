@@ -1,22 +1,18 @@
 "use client";
 
-import { useRef } from "react";
 import { Combobox } from "@base-ui/react/combobox";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 
 import { CURRENCY_LABELS } from "@/lib/zakat/constants";
 import { cn } from "@/lib/utils";
 
-export interface CurrencySelectProps {
-  value: string;
-  onChange: (code: string) => void;
+export interface CurrencyMultiSelectProps {
+  value: string[];
+  onChange: (codes: string[]) => void;
   disabled?: boolean;
-  /** When set, only these ISO codes appear in the list (e.g. Step 1 selections). */
-  allowedCurrencies?: readonly string[];
   "aria-label"?: string;
 }
 
-/** ISO codes in display order (matches CURRENCY_LABELS key insertion order) */
 const CURRENCY_CODES = Object.keys(CURRENCY_LABELS);
 
 function filterCurrencies(code: string, inputValue: string): boolean {
@@ -29,77 +25,74 @@ function filterCurrencies(code: string, inputValue: string): boolean {
 }
 
 /**
- * Searchable single-select currency picker.
- * Filterable by Arabic name or ISO code (e.g. "ريال", "EGP", "saud").
- * Reusable in Step 1 and future per-line asset-row overrides (Phase 4.3).
+ * Searchable multi-select currency picker for Step 1.
+ * Starts empty — user picks currencies explicitly.
  */
-export function CurrencySelect({
+export function CurrencyMultiSelect({
   value,
   onChange,
   disabled = false,
-  allowedCurrencies,
-  "aria-label": ariaLabel = "اختر العملة",
-}: CurrencySelectProps) {
-  const selectedLabel = CURRENCY_LABELS[value] ?? value;
-  const codes = allowedCurrencies ?? CURRENCY_CODES;
-  const searchRef = useRef<HTMLInputElement>(null);
-
+  "aria-label": ariaLabel = "اختر العملات التي تدخرها أو تمتلك أصول بها",
+}: CurrencyMultiSelectProps) {
   return (
-    <Combobox.Root<string>
+    <Combobox.Root<string, true>
+      multiple
       modal={false}
-      items={codes}
+      items={CURRENCY_CODES}
       value={value}
-      onValueChange={(v) => {
-        if (v && v !== value) onChange(v);
+      onValueChange={(next) => {
+        onChange(next ?? []);
       }}
       filter={filterCurrencies}
       itemToStringLabel={(code) => CURRENCY_LABELS[code] ?? code}
       autoHighlight
       disabled={disabled}
     >
-      {/* Trigger shows current value */}
-      <Combobox.Trigger
+      <Combobox.InputGroup
         aria-label={ariaLabel}
         className={cn(
-          "flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-4 py-3 text-sm font-medium transition-colors",
-          "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "flex min-h-12 w-full flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-3 py-2 text-sm transition-colors",
+          "focus-within:ring-2 focus-within:ring-ring",
           disabled && "pointer-events-none opacity-50",
         )}
       >
-        <span>
-          {selectedLabel}
-          <span className="ms-1.5 text-muted-foreground">({value})</span>
-        </span>
-        <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
-      </Combobox.Trigger>
+        <Combobox.Chips className="flex flex-wrap items-center gap-1.5">
+          {value.map((code) => (
+            <Combobox.Chip
+              key={code}
+              aria-label={`${CURRENCY_LABELS[code] ?? code} — محددة`}
+              className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary"
+            >
+              {CURRENCY_LABELS[code] ?? code}
+              <Combobox.ChipRemove
+                aria-label={`إزالة ${CURRENCY_LABELS[code] ?? code}`}
+                className="inline-flex rounded p-0.5 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <X className="h-3 w-3" aria-hidden />
+              </Combobox.ChipRemove>
+            </Combobox.Chip>
+          ))}
+          <Combobox.Input
+            placeholder={value.length === 0 ? "ابحث لإضافة عملة..." : "أضف..."}
+            className="min-w-24 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </Combobox.Chips>
+        <ChevronDown
+          className="ms-auto h-4 w-4 shrink-0 text-muted-foreground"
+          aria-hidden
+        />
+      </Combobox.InputGroup>
 
       <Combobox.Portal>
-        <Combobox.Positioner
-          sideOffset={4}
-          className="z-50 w-[var(--anchor-width)]"
-        >
+        <Combobox.Positioner sideOffset={4} className="z-50 w-[var(--anchor-width)]">
           <Combobox.Popup
-            initialFocus={() => {
-              requestAnimationFrame(() => {
-                searchRef.current?.focus({ preventScroll: true });
-              });
-              return false;
-            }}
+            initialFocus={false}
             className={cn(
               "max-h-72 overflow-hidden rounded-lg border border-border bg-popover shadow-md",
               "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
               "transition-opacity duration-100",
             )}
           >
-            {/* Search input */}
-            <div className="sticky top-0 border-b border-border bg-popover px-3 py-2">
-              <Combobox.Input
-                ref={searchRef}
-                placeholder="ابحث... (اسم أو رمز العملة)"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-              />
-            </div>
-
             <Combobox.Empty className="py-6 text-center text-sm text-muted-foreground">
               لا توجد عملة مطابقة
             </Combobox.Empty>

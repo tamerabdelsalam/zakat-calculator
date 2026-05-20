@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 
 import { ASSET_LABELS, CURRENCY_LABELS } from "@/lib/zakat/constants";
-import { CurrencySelect } from "@/components/shared/currency-select";
+import { CurrencyMultiSelect } from "@/components/shared/currency-multi-select";
 import { cn } from "@/lib/utils";
 
 import { useWizard } from "./wizard-context";
@@ -19,8 +19,19 @@ import { CertificatesStep } from "./step-certificates";
 import { type AssetCategoryKey, type WizardStepId } from "./types";
 
 export function CalculatorWizard() {
-  const { steps, currentStep, stepIndex, isFirstStep, isLastStep, nextStep, prevStep } =
-    useWizard();
+  const {
+    state,
+    steps,
+    currentStep,
+    stepIndex,
+    isFirstStep,
+    isLastStep,
+    nextStep,
+    prevStep,
+  } = useWizard();
+
+  const currencyStepIncomplete =
+    currentStep.id === "currency" && state.currencies.length === 0;
 
   // Focus the step section heading when the step changes
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -28,7 +39,13 @@ export function CalculatorWizard() {
     headingRef.current?.focus();
   }, [stepIndex]);
 
-  useWizardKeyboard({ onNext: nextStep, onBack: prevStep, isFirstStep, isLastStep });
+  useWizardKeyboard({
+    onNext: nextStep,
+    onBack: prevStep,
+    isFirstStep,
+    isLastStep,
+    nextDisabled: currencyStepIncomplete,
+  });
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
@@ -58,6 +75,7 @@ export function CalculatorWizard() {
         onNext={nextStep}
         isFirstStep={isFirstStep}
         isLastStep={isLastStep}
+        nextDisabled={currencyStepIncomplete}
         nextLabel={isLastStep ? "إنهاء" : "التالي"}
       />
     </div>
@@ -99,38 +117,84 @@ function WizardStepBody({ stepId }: { stepId: WizardStepId }) {
 
 // ─── Step 1: Currency ────────────────────────────────────────────────────────
 
+function sameCurrencySet(a: readonly string[], b: readonly string[]): boolean {
+  if (a.length !== b.length) return false;
+  const setB = new Set(b);
+  return a.every((c) => setB.has(c));
+}
+
+function formatCurrencyList(codes: readonly string[]): string {
+  return codes.map((c) => CURRENCY_LABELS[c] ?? c).join("، ");
+}
+
 function CurrencyStep() {
   const { state, dispatch } = useWizard();
   const [showWarning, setShowWarning] = useState(false);
-  const [pendingCurrency, setPendingCurrency] = useState<string | null>(null);
+  const [pendingCurrencies, setPendingCurrencies] = useState<string[] | null>(null);
+  const [pendingPrimary, setPendingPrimary] = useState<string | null>(null);
 
   const hasData = hasEnteredData(state.assets);
 
-  function handleChange(code: string) {
-    if (code === state.currency) return;
+  function applyCurrencies(currencies: string[], primary: string) {
+    dispatch({ type: "SET_CURRENCIES", currencies });
+    if (primary && primary !== state.currency) {
+      dispatch({ type: "SET_PRIMARY_CURRENCY", currency: primary });
+    }
+  }
+
+  function handleCurrenciesChange(currencies: string[]) {
+    const primary =
+      currencies.length === 0
+        ? ""
+        : currencies.includes(state.currency)
+          ? state.currency
+          : currencies[0]!;
+    if (
+      sameCurrencySet(currencies, state.currencies) &&
+      primary === state.currency
+    ) {
+      return;
+    }
     if (hasData) {
-      setPendingCurrency(code);
+      setPendingCurrencies(currencies);
+      setPendingPrimary(primary);
       setShowWarning(true);
     } else {
-      dispatch({ type: "SET_CURRENCY", currency: code });
+      applyCurrencies(currencies, primary);
+    }
+  }
+
+  function handlePrimaryChange(primary: string) {
+    if (primary === state.currency) return;
+    if (hasData) {
+      setPendingCurrencies([...state.currencies]);
+      setPendingPrimary(primary);
+      setShowWarning(true);
+    } else {
+      dispatch({ type: "SET_PRIMARY_CURRENCY", currency: primary });
     }
   }
 
   function confirmChange() {
-    if (!pendingCurrency) return;
-    dispatch({ type: "SET_CURRENCY", currency: pendingCurrency });
+    if (pendingCurrencies === null) return;
+    const primary =
+      pendingPrimary ??
+      (pendingCurrencies.length > 0 ? pendingCurrencies[0]! : "");
+    applyCurrencies(pendingCurrencies, primary);
     dispatch({ type: "SET_ASSETS", assets: emptyAssetsFromState() });
     setShowWarning(false);
-    setPendingCurrency(null);
+    setPendingCurrencies(null);
+    setPendingPrimary(null);
   }
 
   function cancelChange() {
     setShowWarning(false);
-    setPendingCurrency(null);
+    setPendingCurrencies(null);
+    setPendingPrimary(null);
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {showWarning && (
         <div
           role="alertdialog"
@@ -142,12 +206,31 @@ function CurrencyStep() {
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
             <div>
               <p id="currency-warning-title" className="text-sm font-semibold">
-                تغيير العملة سيمسح البيانات المُدخلة
+                تعديل العملات سيمسح البيانات المُدخلة
               </p>
               <p id="currency-warning-desc" className="mt-0.5 text-xs text-muted-foreground">
-                لقد أدخلت أصولاً بعملة «{CURRENCY_LABELS[state.currency] ?? state.currency}».
-                تغييرها إلى «{CURRENCY_LABELS[pendingCurrency ?? ""] ?? pendingCurrency}»
-                سيحذف جميع البيانات المُدخلة.
+                {state.currencies.length > 0 ? (
+                  <>لقد أدخلت أصولاً بالعملات: {formatCurrencyList(state.currencies)}.</>
+                ) : (
+                  <>لقد أدخلت أصولاً بالفعل.</>
+                )}
+                {pendingCurrencies !== null &&
+                  !sameCurrencySet(pendingCurrencies, state.currencies) && (
+                    <>
+                      {" "}
+                      {pendingCurrencies.length > 0
+                        ? `تعديل القائمة إلى ${formatCurrencyList(pendingCurrencies)} سيحذف جميع البيانات.`
+                        : "إفراغ قائمة العملات سيحذف جميع البيانات."}
+                    </>
+                  )}
+                {pendingPrimary && pendingPrimary !== state.currency && (
+                  <>
+                    {" "}
+                    تغيير العملة الرئيسية إلى «
+                    {CURRENCY_LABELS[pendingPrimary] ?? pendingPrimary}» سيحذف جميع
+                    البيانات.
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -170,15 +253,65 @@ function CurrencyStep() {
         </div>
       )}
 
-      <CurrencySelect
-        value={state.currency}
-        onChange={handleChange}
-        aria-label="اختر عملة الحساب"
-      />
+      <div className="space-y-1.5">
+        <span className="text-sm font-medium">
+          اختر العملة أو العملات التي تدخرها أو تمتلك أصول بها
+        </span>
+        <CurrencyMultiSelect
+          value={state.currencies}
+          onChange={handleCurrenciesChange}
+          aria-label="اختر العملة أو العملات التي تدخرها أو تمتلك أصول بها"
+        />
+        <p className="text-xs text-muted-foreground">
+          {state.currencies.length === 0
+            ? "اختر عملة واحدة على الأقل للمتابعة."
+            : "ستظهر العملات المختارة كخيارات لكل سطر إدخال في الخطوات اللاحقة."}
+        </p>
+      </div>
 
-      <p className="text-xs text-muted-foreground">
-        جميع المبالغ والنصاب وزكاة الحول ستُحسب بهذه العملة.
-      </p>
+      {state.currencies.length > 1 && (
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-medium">العملة الرئيسية للنتيجة</legend>
+          <p className="text-xs text-muted-foreground">
+            يُحسب النصاب والزكاة النهائية بهذه العملة؛ تُحوَّل المبالغ الأخرى
+            تلقائياً.
+          </p>
+          {state.currencies.map((code) => (
+            <label
+              key={code}
+              className={cn(
+                "flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-colors",
+                state.currency === code
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:bg-muted/50",
+              )}
+            >
+              <input
+                type="radio"
+                name="primaryCurrency"
+                value={code}
+                checked={state.currency === code}
+                onChange={() => handlePrimaryChange(code)}
+                className="h-4 w-4 accent-primary"
+              />
+              <span className="text-sm font-medium">
+                {CURRENCY_LABELS[code] ?? code}
+                <span className="ms-1.5 text-muted-foreground">({code})</span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+      )}
+
+      {state.currencies.length === 1 && (
+        <p className="text-xs text-muted-foreground">
+          جميع المبالغ والنصاب وزكاة الحول ستُحسب بـ{" "}
+          <span className="font-medium text-foreground">
+            {CURRENCY_LABELS[state.currency] ?? state.currency}
+          </span>
+          .
+        </p>
+      )}
     </div>
   );
 }

@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { FileText, Plus, Trash2 } from "lucide-react";
 
+import { CurrencySelect } from "@/components/shared/currency-select";
+import { useSnapshotRates } from "@/components/shared/use-snapshot-rates";
 import { formatCurrency } from "@/lib/formatters";
+import { convertAmount } from "@/lib/prices/convert";
 import { certificateEntrySchema } from "@/lib/schemas";
 import { CURRENCY_LABELS } from "@/lib/zakat/constants";
 import type { CertificateEntry } from "@/lib/zakat/types";
@@ -11,13 +14,18 @@ import { cn } from "@/lib/utils";
 
 import { useWizard } from "./wizard-context";
 
-function createEmptyCertificateEntry(): CertificateEntry {
+function createEmptyCertificateEntry(defaultCurrency: string): CertificateEntry {
   return {
     id: crypto.randomUUID(),
     label: "",
     totalValue: 0,
     spendsReturnsOnly: false,
+    currency: defaultCurrency,
   };
+}
+
+function rowCurrency(entry: CertificateEntry, primary: string): string {
+  return entry.currency ?? primary;
 }
 
 function isDraftEntry(entry: CertificateEntry): boolean {
@@ -47,13 +55,16 @@ function entryFieldErrors(
 export function CertificatesStep() {
   const { state, dispatch } = useWizard();
   const firstRef = useRef<HTMLInputElement>(null);
+  const ratesState = useSnapshotRates();
 
   useEffect(() => {
     firstRef.current?.focus();
   }, []);
 
   const entries = state.assets.certificates;
-  const currency = state.currency;
+  const primary = state.currency;
+  const allowed = state.currencies;
+  const multi = allowed.length > 1;
 
   function updateCertificates(next: CertificateEntry[]) {
     dispatch({
@@ -71,14 +82,23 @@ export function CertificatesStep() {
   }
 
   function addEntry() {
-    updateCertificates([...entries, createEmptyCertificateEntry()]);
+    updateCertificates([...entries, createEmptyCertificateEntry(primary)]);
   }
 
   const validEntries = entries.filter(
     (e) => !isDraftEntry(e) && certificateEntrySchema.safeParse(e).success,
   );
 
-  const subtotal = validEntries.reduce((sum, e) => sum + e.totalValue, 0);
+  const subtotal = validEntries.reduce((sum, e) => {
+    const code = rowCurrency(e, primary);
+    if (code === primary) return sum + e.totalValue;
+    if (ratesState.status !== "ok") return sum;
+    try {
+      return sum + convertAmount(e.totalValue, code, primary, ratesState.rates);
+    } catch {
+      return sum;
+    }
+  }, 0);
 
   return (
     <div className="space-y-5">
@@ -87,12 +107,25 @@ export function CertificatesStep() {
         <p>
           أدخل شهادات الإيداع والاستثمارات ذات العائد الثابت. إذا كانت ثروتك الزكوية
           تتكون <span className="font-medium text-foreground">فقط</span> من شهادات
-          تنفق عوائدها دون لمس أصل المال — فعّل الخيار المناسب لكل شهادة؛ يُطبَّق
-          حينها حكم خاص (١٠٪ من العائد). جميع المبالغ بـ{" "}
-          <span className="font-medium text-foreground">
-            {CURRENCY_LABELS[currency] ?? currency}
-          </span>
-          .
+          تنفق عوائدها دون لمس أصل المال — فعّل الخيار المناسب لكل شهادة؛ يُطبَّق
+          حينها حكم خاص (١٠٪ من العائد).{" "}
+          {multi ? (
+            <>
+              اختر عملة كل سطر؛ يُحسب المجموع بـ{" "}
+              <span className="font-medium text-foreground">
+                {CURRENCY_LABELS[primary] ?? primary}
+              </span>
+              .
+            </>
+          ) : (
+            <>
+              جميع المبالغ بـ{" "}
+              <span className="font-medium text-foreground">
+                {CURRENCY_LABELS[primary] ?? primary}
+              </span>
+              .
+            </>
+          )}
         </p>
       </div>
 
@@ -104,6 +137,7 @@ export function CertificatesStep() {
         <ul className="space-y-3" aria-label="قائمة الشهادات البنكية">
           {entries.map((entry, idx) => {
             const errors = entryFieldErrors(entry);
+            const code = rowCurrency(entry, primary);
             return (
               <li
                 key={entry.id}
@@ -147,37 +181,70 @@ export function CertificatesStep() {
                   )}
                 </div>
 
-                <div className="space-y-1.5">
-                  <label
-                    htmlFor={`cert-value-${entry.id}`}
-                    className="text-sm font-medium"
-                  >
-                    القيمة الإجمالية ({currency})
-                  </label>
-                  <input
-                    id={`cert-value-${entry.id}`}
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="0.01"
-                    value={entry.totalValue > 0 ? entry.totalValue : ""}
-                    onChange={(e) => {
-                      const raw = e.target.value;
-                      const totalValue = raw === "" ? 0 : Number.parseFloat(raw);
-                      updateEntry(entry.id, {
-                        totalValue: Number.isFinite(totalValue) ? totalValue : 0,
-                      });
-                    }}
-                    placeholder="0.00"
-                    className={cn(
-                      "w-full rounded-md border bg-background px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      errors.totalValue ? "border-destructive" : "border-input",
+                <div className={cn("grid gap-3", multi && "sm:grid-cols-2")}>
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor={`cert-value-${entry.id}`}
+                      className="text-sm font-medium"
+                    >
+                      القيمة الإجمالية ({code})
+                    </label>
+                    <input
+                      id={`cert-value-${entry.id}`}
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      value={entry.totalValue > 0 ? entry.totalValue : ""}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        const totalValue = raw === "" ? 0 : Number.parseFloat(raw);
+                        updateEntry(entry.id, {
+                          totalValue: Number.isFinite(totalValue) ? totalValue : 0,
+                        });
+                      }}
+                      placeholder="0.00"
+                      className={cn(
+                        "w-full rounded-md border bg-background px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        errors.totalValue ? "border-destructive" : "border-input",
+                      )}
+                    />
+                    {errors.totalValue && (
+                      <p className="text-xs text-destructive">{errors.totalValue}</p>
                     )}
-                  />
-                  {errors.totalValue && (
-                    <p className="text-xs text-destructive">{errors.totalValue}</p>
+                  </div>
+
+                  {multi && (
+                    <div className="space-y-1.5">
+                      <span className="text-sm font-medium">العملة</span>
+                      <CurrencySelect
+                        value={code}
+                        allowedCurrencies={allowed}
+                        onChange={(next) => updateEntry(entry.id, { currency: next })}
+                        aria-label={`عملة الإدخال ${idx + 1}`}
+                      />
+                    </div>
                   )}
                 </div>
+
+                {multi &&
+                  code !== primary &&
+                  entry.totalValue > 0 &&
+                  ratesState.status === "ok" && (
+                    <p className="text-xs text-muted-foreground">
+                      ≈{" "}
+                      {formatCurrency(
+                        convertAmount(
+                          entry.totalValue,
+                          code,
+                          primary,
+                          ratesState.rates,
+                        ),
+                        primary,
+                      )}{" "}
+                      بالعملة الرئيسية
+                    </p>
+                  )}
 
                 <label
                   className={cn(
@@ -227,7 +294,7 @@ export function CertificatesStep() {
         <div className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3 text-sm">
           <span className="text-muted-foreground">مجموع الشهادات</span>
           <span className="font-semibold tabular-nums">
-            {formatCurrency(subtotal, currency)}
+            {formatCurrency(subtotal, primary)}
           </span>
         </div>
       )}
