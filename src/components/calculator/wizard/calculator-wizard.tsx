@@ -15,6 +15,7 @@ import { NisabDateStep } from "./step-nisab-date";
 import { AssetChecklistStep } from "./step-asset-checklist";
 import { CashStep } from "./step-cash";
 import { StocksStep } from "./step-stocks";
+import { CertificatesStep } from "./step-certificates";
 import { type AssetCategoryKey, type WizardStepId } from "./types";
 
 export function CalculatorWizard() {
@@ -79,6 +80,8 @@ function WizardStepBody({ stepId }: { stepId: WizardStepId }) {
       return <CashStep />;
     case "stocks":
       return <StocksStep />;
+    case "certificates":
+      return <CertificatesStep />;
     case "results":
       return (
         <p className="text-sm text-muted-foreground">

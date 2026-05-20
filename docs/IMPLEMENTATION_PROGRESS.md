@@ -57,7 +57,7 @@
 #### 4.3 Asset Entry Forms
 - [x] Cash & bank balances form
 - [x] Stocks & funds form
-- [ ] Bank certificates form (with returns-only toggle)
+- [x] Bank certificates form (with returns-only toggle)
 - [ ] Physical gold form (purity selector: 24/21/18/14K)
 - [ ] Physical silver form (purity selector: 999/925, auto-convert)
 - [ ] Real estate form (with installment handling)
