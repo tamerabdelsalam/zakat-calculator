@@ -37,6 +37,7 @@ export const CURRENCY_LABELS: Record<string, string> = {
   IDR: "روبية إندونيسية",
   INR: "روبية هندية",
   MYR: "رينغيت ماليزي",
+  CNY: "يوان صيني",
 };
 
 /** قائمة العملات المدعومة */

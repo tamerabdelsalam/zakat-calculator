@@ -8,7 +8,7 @@ export const PRICE_SNAPSHOT_BASENAME = "price-snapshot.json";
 /**
  * Currencies for which we precompute nisab in the daily snapshot.
  * Two GoldAPI calls (XAU+USD, XAG+USD) + ExchangeRate-API, then all rows derived.
- * Priority international + South Asia: EUR, GBP, TRY, PKR, IDR, INR, MYR.
+ * Priority international + South Asia: EUR, GBP, TRY, PKR, IDR, INR, MYR, CNY.
  */
 export const SUPPORTED_CURRENCIES: readonly string[] = [
   "USD",
@@ -27,6 +27,7 @@ export const SUPPORTED_CURRENCIES: readonly string[] = [
   "IDR",
   "INR",
   "MYR",
+  "CNY",
 ] as const;
 
 export const GOLD_API_BASE = "https://www.goldapi.io/api";
