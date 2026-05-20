@@ -40,11 +40,14 @@ export function CurrencySelect({
 
   return (
     <Combobox.Root<string>
+      items={CURRENCY_CODES}
       value={value}
       onValueChange={(v) => {
         if (v && v !== value) onChange(v);
       }}
       filter={filterCurrencies}
+      itemToStringLabel={(code) => CURRENCY_LABELS[code] ?? code}
+      autoHighlight
       disabled={disabled}
     >
       {/* Trigger shows current value */}
@@ -84,12 +87,12 @@ export function CurrencySelect({
               />
             </div>
 
-            <Combobox.List className="overflow-y-auto p-1">
-              <Combobox.Empty className="py-6 text-center text-sm text-muted-foreground">
-                لا توجد عملة مطابقة
-              </Combobox.Empty>
+            <Combobox.Empty className="py-6 text-center text-sm text-muted-foreground">
+              لا توجد عملة مطابقة
+            </Combobox.Empty>
 
-              {CURRENCY_CODES.map((code) => (
+            <Combobox.List className="overflow-y-auto p-1">
+              {(code) => (
                 <Combobox.Item
                   key={code}
                   value={code}
@@ -107,7 +110,7 @@ export function CurrencySelect({
                     <Check className="h-4 w-4 text-primary" aria-hidden />
                   </Combobox.ItemIndicator>
                 </Combobox.Item>
-              ))}
+              )}
             </Combobox.List>
           </Combobox.Popup>
         </Combobox.Positioner>
